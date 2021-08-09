@@ -53,5 +53,5 @@ OUTPUT:
 
 ## TODO
 
-[] More types of search spaces.
-[] Search on multiple machines base on redis.
+[ ] More types of search spaces.
+[ ] Search on multiple machines base on redis.
