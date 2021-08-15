@@ -34,7 +34,7 @@ if __name__ == "__main__":
         command = ['python', '-m', args.entry, args.config]
         for j, value in enumerate(config):
             command.append(f"--{keys[j]}")
-            command.append(value)
+            command.append(str(value))
         command.append('--runtime.output_dir')
         new_output_dir = raw_output_dir
         for value in config:
