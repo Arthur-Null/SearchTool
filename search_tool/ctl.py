@@ -36,5 +36,8 @@ if __name__ == "__main__":
             command.append(f"--{keys[j]}")
             command.append(value)
         command.append('--runtime.output_dir')
-        command.append(raw_output_dir / str(i))
+        new_output_dir = raw_output_dir
+        for value in config:
+            new_output_dir = f"{new_output_dir}_{value}"
+        command.append(new_output_dir)
         subprocess.run(command)
