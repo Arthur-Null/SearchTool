@@ -2,7 +2,6 @@ import argparse
 import yaml
 import subprocess
 from itertools import product
-from pathlib import Path
 
 from .util import get_search_space
 
@@ -27,8 +26,7 @@ if __name__ == "__main__":
         try:
             raw_output_dir = raw_config['runtime']['output_dir']
         except ValueError:
-            raw_output_dir = './outputs'
-        raw_output_dir = Path(raw_output_dir)
+            raw_output_dir = './outputs/'
 
     for i, config in enumerate(configs):
         command = ['python', '-m', args.entry, args.config]
