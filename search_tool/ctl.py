@@ -1,3 +1,5 @@
+import os
+from pathlib import Path
 import argparse
 import yaml
 import subprocess
@@ -34,8 +36,16 @@ if __name__ == "__main__":
             command.append(f"--{keys[j]}")
             command.append(str(value))
         command.append('--runtime.output_dir')
-        new_output_dir = raw_output_dir
+        new_output_dir = Path(raw_output_dir)
+        suffix = ''
         for value in config:
-            new_output_dir = f"{new_output_dir}_{value}"
-        command.append(new_output_dir)
+            suffix += f"{value}_"
+        suffix = suffix[:-1]
+        new_output_dir = new_output_dir / suffix
+        if os.path.exists(new_output_dir):
+            continue
+        else:
+            os.makedirs(new_output_dir)
+        command.append(str(new_output_dir))
         subprocess.run(command)
+    print("All done")
