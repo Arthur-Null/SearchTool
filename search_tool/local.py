@@ -5,7 +5,9 @@ from typing import Callable, Any, Union
 from pathlib import Path
 from itertools import product
 
-from .util import merge_dicts, get_search_space, get_config
+from .util import get_search_space, get_config
+
+loader = yaml.SafeLoader
 
 
 def get_full_config(config: dict, dir_name: Path):
@@ -14,10 +16,11 @@ def get_full_config(config: dict, dir_name: Path):
         dir_name = os.path.dirname(base_config)
         with open(base_config, "r") as f:
             try:
-                base_config = yaml.load(f)
+                base_config = yaml.load(f, Loader=loader)
             except Exception:
                 base_config = json.load(f)
-        config = merge_dicts(base_config, config)
+        base_config.update(config)
+        config = base_config
     return config
 
 
@@ -29,15 +32,22 @@ def run_exps(config: Union[dict, str, Path], run: Callable[[dict], Any]):
         run: The function to run a single experiment.
     """
     if type(config) == dict:
-        config_path = '.'
-    else:
+        config_path = "."
+    elif type(config) == str:
         config_path = os.path.normpath(config)
-        with open(config, 'r') as f:
-            if config.endswith('.json'):
+        with open(config, "r") as f:
+            if config.endswith(".json"):
                 config = json.load(f)
             else:
-                config = yaml.load(f)
-    log_dir = config.pop('log_dir')
+                config = yaml.load(f, Loader=loader)
+    elif type(config) == Path:
+        config_path = os.path.normpath(config)
+        with open(config, "r") as f:
+            if config.suffix == ".json":
+                config = json.load(f)
+            else:
+                config = yaml.load(f, Loader=loader)
+    log_dir = config.pop("log_dir")
     search_space = config.pop("search")
 
     keys = []
