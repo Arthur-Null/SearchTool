@@ -1,4 +1,5 @@
 import copy
+import numpy as np
 
 
 def merge_dicts(d1, d2):
@@ -79,7 +80,7 @@ def get_search_space(description):
         return description["value"]
     elif description["type"] == "range":
         start, end, step = description["value"]
-        return range(start, end, step)
+        return np.arange(start, end, step).tolist()
     else:
         raise NotImplementedError("Type must be choice or range")
 
