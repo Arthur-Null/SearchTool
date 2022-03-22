@@ -1,0 +1,52 @@
+code:
+  local_dir: .
+description: transformer ts
+environment:
+  image: arthurnull/seqml-base:latest
+  setup:
+  - pip install .
+search:
+  job_template:
+    name: transformer_{dataset}_{horizon}_{lr}_{weight_decay}_{hidden}_{emb}_{emb_type}_{layer}_{head}_{seed}
+    sku: G1
+    command:
+    - export MKL_SERVICE_FORCE_INTEL=1
+    - python -m utilsd.az.cli download hftrading data LSTNet_ts
+    - python -m forecaster.entry.tsforecast exp/2202/combined/transformer_{dataset}.yml --model.lr {lr} --model.weight_decay {weight_decay} --network.hidden_size {hidden} --network.emb_dim {emb} --network.emb_type {emb_type} --runtime.seed {seed} --network.num_layers {layer} --network.num_heads {head} --data.horizon {horizon}
+  type: grid
+  max_trials: 1000
+  params:
+    - name: dataset
+      spec: discrete
+      values: [electricity, exchange_rate, solar-energy, traffic]
+    - name: horizon
+      spec: discrete
+      values: [3, 6, 12]
+    - name: lr
+      spec: discrete
+      values: [1e-3, 1e-4]
+    - name: weight_decay
+      spec: discrete
+      values: [1e-5]
+    - name: hidden
+      spec: discrete
+      values: [64]
+    - name: emb
+      spec: discrete
+      values: [1]
+    - name: emb_type
+      spec: discrete
+      values: [static, learn]
+    - name: layer
+      spec: discrete
+      values: [1, 4]
+    - name: head
+      spec: discrete
+      values: [2]
+    - name: seed
+      spec: discrete
+      values: [42, 1024, 27]
+target:
+  name: itpeusp40cl
+  service: amlk8s
+
