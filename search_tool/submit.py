@@ -40,7 +40,8 @@ def merge_submit(config_file, merge_paras, out_file):
     for para_combined in search_space:
         this_run_command = copy.deepcopy(run_command)
         this_outdir_command = copy.deepcopy(outdir_command)
-        for i, para in enumerate(merge_paras):
+        for i, para in enumerate(merged_searches):
+            para = para["name"]
             this_run_command = this_run_command.replace("{" + para + "}", str(para_combined[i]))
             this_outdir_command += str(para_combined[i]) + "_"
         if this_outdir_command[-1] == "_":
