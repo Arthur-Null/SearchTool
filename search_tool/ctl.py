@@ -47,5 +47,6 @@ if __name__ == "__main__":
         else:
             os.makedirs(new_output_dir)
         command.append(str(new_output_dir))
+        print(command)
         subprocess.run(command)
     print("All done")
